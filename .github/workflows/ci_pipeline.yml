@@ -23,6 +23,12 @@ jobs:
         run: |
           pip install -r requirements.txt
 
+      - name: Debug Paths
+        run: |
+          echo "Current working directory: $(pwd)"
+          echo "Listing all files in repo:"
+          find . -maxdepth 3 -not -path '*/.*'
+
       - name: Generate Mock Data
         run: |
           # Create the directory relative to the workspace root
