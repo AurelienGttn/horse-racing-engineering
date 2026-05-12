@@ -5,7 +5,11 @@ import os
 
 def generate_horse_racing_data(days_back=10):
     # Ensure the raw data directory exists
-    raw_data_path = '../data/raw'
+    # Get the directory where the script is located
+    base_dir = os.path.dirname(os.path.abspath(__file__))
+    # Move up one level to the repo root, then into data/raw
+    raw_data_path = os.path.join(base_dir, '..', 'data', 'raw')
+
     os.makedirs(raw_data_path, exist_ok=True)
     
     data = []
