@@ -1,0 +1,18 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+
+# Virtual Environment
+venv/
+env/
+.venv/
+
+# dbt specific
+target/
+dbt_packages/
+logs/
+
+# DuckDB / Local Data
+*.duckdb
+data/raw/        # NEVER push raw data files to GitHub
+.env             # To store your secrets/API keys later
