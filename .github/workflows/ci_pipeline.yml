@@ -25,6 +25,9 @@ jobs:
 
       - name: Generate Mock Data
         run: |
+          # Ensure the data directory exists before running the script
+          mkdir -p data/raw
+          # Run the script using the full path from the repo root
           python scripts/generate_mock_data.py
 
       - name: Run dbt
