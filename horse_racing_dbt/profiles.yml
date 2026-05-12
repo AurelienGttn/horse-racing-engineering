@@ -1,8 +1,8 @@
 # This matches the name in the dbt_project.yml
 horse_racing_dbt:
   outputs:
-    dev:
+    exploration-dev:
       type: duckdb
-      path: 'dev.duckdb' # This will create a local database file
+      path: 'exploration-dev.duckdb' # This will create a local database file
       threads: 4
-  target: dev
+  target: exploration-dev

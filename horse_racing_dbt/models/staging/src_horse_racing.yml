@@ -1,0 +1,11 @@
+version: 2
+
+sources:
+  - name: raw_horse_racing
+    schema: main
+    description: "Raw horse racing data from Python mock script"
+    tables:
+      - name: races
+        description: "Metadata for each race event"
+        # We use a relative path to find the CSV we generated earlier
+        external_location: "read_csv_auto('../data/raw/races.csv')"

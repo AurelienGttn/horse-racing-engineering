@@ -15,4 +15,4 @@ logs/
 # DuckDB / Local Data
 *.duckdb
 data/raw/        # NEVER push raw data files to GitHub
-.env             # To store your secrets/API keys later
+.env             # To store secrets/API keys

@@ -1,0 +1,29 @@
+version: 2
+
+models:
+  - name: mart_venue_stats
+    description: "High-level summary of racing venues, used for business performance tracking."
+    columns:
+      - name: venue_name
+        description: "Name of the racing venue."
+        tests:
+          - not_null
+          - unique
+
+      - name: total_races
+        description: "Total number of races held at the venue."
+        tests:
+          - not_null
+
+      - name: avg_prize
+        description: "Average prize money awarded per race at the venue."
+        tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              min_value: 0
+              inclusive: true  # Ensures value > 0, not >= 0   
+    
+      - name: last_update
+        description: "Timestamp of the last update to the venue statistics."
+        tests:
+          - not_null

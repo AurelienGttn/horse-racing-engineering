@@ -1,0 +1,40 @@
+version: 2
+
+models:
+  - name: stg_races
+    description: "Staging model for race metadata. This model reads raw race data, performs necessary transformations (like type casting and renaming), and prepares it for downstream analysis. It serves as a clean, standardized source of race information for other models to build upon."
+    columns:
+      - name: race_id
+        data_type: varchar
+        description: "Unique identifier for each race. Cast to varchar for consistency and to avoid issues with leading zeros in IDs."
+        tests:
+          - not_null
+          - unique
+
+      - name: race_date
+        data_type: date
+        description: "Date of the race. Cast to date type for easier date-based analysis and filtering."
+        tests:
+          - not_null
+
+      - name: venue_name
+        data_type: varchar
+        description: "Name of the venue where the race took place. Uppercased for consistency."
+        tests:
+          - not_null
+
+      - name: track_condition
+        data_type: varchar
+        description: "Condition of the track where the race took place. Useful for analyzing race outcomes under different track conditions."
+
+      - name: prize_money_eur
+        data_type: float
+        description: "Prize money for the race in Euros. Cast to float for easier analysis."
+        tests:
+          - dbt_utils.accepted_range:
+              min_value: 0
+              inclusive: true  # Ensures value > 0, not >= 0   
+
+      - name: inserted_at
+        data_type: timestamp
+        description: "Timestamp when the record was inserted into the database. Useful for auditing and tracking data freshness."
