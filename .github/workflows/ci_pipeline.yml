@@ -25,10 +25,13 @@ jobs:
 
       - name: Generate Mock Data
         run: |
-          # Ensure the data directory exists before running the script
-          mkdir -p data/raw
-          # Run the script using the full path from the repo root
-          python scripts/generate_mock_data.py
+          # Create the directory relative to the workspace root
+          mkdir -p ${{ github.workspace }}/data/raw
+          
+          # Run the script using the absolute path to the workspace
+          # We set PYTHONPATH to the workspace so imports work correctly
+          export PYTHONPATH=$PYTHONPATH:${{ github.workspace }}
+          python ${{ github.workspace }}/scripts/generate_mock_data.py
 
       - name: Run dbt
         env:

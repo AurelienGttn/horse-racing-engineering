@@ -1,15 +1,17 @@
+import os
 import pandas as pd
 import numpy as np
 from datetime import datetime, timedelta
-import os
+
+# This is the "Senior" way to handle paths:
+# 1. Get the directory where THIS script lives (/home/runner/.../scripts/)
+script_dir = os.path.dirname(os.path.abspath(__file__))
+
+# 2. Go up one level to the repo root and then into data/raw
+# This ensures it works on your Mac AND on GitHub's Linux runner
+raw_data_path = os.path.abspath(os.path.join(script_dir, '..', 'data', 'raw'))
 
 def generate_horse_racing_data(days_back=10):
-    # Ensure the raw data directory exists
-    # Get the directory where the script is located
-    base_dir = os.path.dirname(os.path.abspath(__file__))
-    # Move up one level to the repo root, then into data/raw
-    raw_data_path = os.path.join(base_dir, '..', 'data', 'raw')
-
     os.makedirs(raw_data_path, exist_ok=True)
     
     data = []
