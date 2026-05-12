@@ -1,43 +1,32 @@
-name: dbt_ci_pipeline
-
-on:
-  push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
-
 jobs:
   build_and_test:
     runs-on: ubuntu-latest
+    # This is the magic fix:
+    defaults:
+      run:
+        working-directory: horse-racing-engineering
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v6
+        uses: actions/checkout@v4
+        with:
+          # Ensure it checks out into the current dir without extra nesting
+          path: horse-racing-engineering
 
       - name: Set up Python
-        uses: actions/setup-python@v6
+        uses: actions/setup-python@v5
         with:
           python-version: '3.11'
+          # Tell python where to find requirements
+          cache: 'pip'
 
       - name: Install dependencies
-        run: |
-          pip install -r requirements.txt
-
-      - name: Debug Paths
-        run: |
-          echo "Current working directory: $(pwd)"
-          echo "Listing all files in repo:"
-          find . -maxdepth 3 -not -path '*/.*'
+        run: pip install -r requirements.txt
 
       - name: Generate Mock Data
         run: |
-          # Create the directory relative to the workspace root
-          mkdir -p ${{ github.workspace }}/data/raw
-          
-          # Run the script using the absolute path to the workspace
-          # We set PYTHONPATH to the workspace so imports work correctly
-          export PYTHONPATH=$PYTHONPATH:${{ github.workspace }}
-          python ${{ github.workspace }}/scripts/generate_mock_data.py
+          mkdir -p data/raw
+          python scripts/generate_mock_data.py
 
       - name: Run dbt
         env:
@@ -45,5 +34,5 @@ jobs:
         run: |
           cd horse_racing_dbt
           dbt deps
-          dbt run
-          dbt test
+          dbt run --target dev
+          dbt test --target dev
