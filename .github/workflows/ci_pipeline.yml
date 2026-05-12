@@ -9,31 +9,25 @@ on:
 jobs:
   build_and_test:
     runs-on: ubuntu-latest
-    # This is the magic fix:
-    defaults:
-      run:
-        working-directory: horse-racing-engineering
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
-        with:
-          # Ensure it checks out into the current dir without extra nesting
-          path: horse-racing-engineering
+        uses: actions/checkout@v6
 
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: '3.11'
-          # Tell python where to find requirements
-          cache: 'pip'
 
       - name: Install dependencies
-        run: pip install -r requirements.txt
+        run: |
+          pip install -r requirements.txt
 
       - name: Generate Mock Data
         run: |
+          # Ensure the data directory exists before running the script
           mkdir -p data/raw
+          # Run the script using the full path from the repo root
           python scripts/generate_mock_data.py
 
       - name: Run dbt
@@ -42,5 +36,5 @@ jobs:
         run: |
           cd horse_racing_dbt
           dbt deps
-          dbt run --target dev
-          dbt test --target dev
+          dbt run
+          dbt test
