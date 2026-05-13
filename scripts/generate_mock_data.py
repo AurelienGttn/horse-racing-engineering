@@ -36,7 +36,7 @@ def generate_horse_racing_data(days_back=10):
             })
     
     df = pd.DataFrame(data)
-    output_file = os.path.join(raw_data_path, 'races.csv')
+    output_file = os.path.join(raw_data_path, 'mock_races.csv')
     df.to_csv(output_file, index=False)
     print(f"✅ Success! Created {len(df)} rows in {output_file}")
 
