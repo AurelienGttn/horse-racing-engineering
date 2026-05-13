@@ -7,14 +7,22 @@ with source as (
 ),
 
 renamed as (
-    select
+    SELECT
         race_id,
         cast(race_date as date) as race_date,
-        upper(venue) as venue_name,
-        track_condition,
-        cast(prize_money as float) as prize_money_eur,
-        cast(loaded_at as timestamp) as inserted_at
-    from source
+        venue,
+        country,
+        weather,
+        reunion_nature,
+        discipline,
+        specialty,
+        condition_age,
+        cast(prize_money as float) as prize_money,
+        cast(runners_count as integer) as runners_count,
+        cast(distance as integer) as distance,
+        distance_unit,
+        is_quinte
+    FROM source
 )
 
 select * from renamed

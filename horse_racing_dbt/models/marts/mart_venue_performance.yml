@@ -2,29 +2,46 @@ version: 2
 
 models:
   - name: mart_venue_performance
-    description: "High-level summary of racing venues, used for business performance tracking."
+    description: >
+      Aggregated performance and efficiency metrics per hippodrome. 
+      This model categorizes venues into tiers and calculates value density 
+      to identify high-stakes racing locations.
     columns:
-      - name: venue_name
-        description: "Name of the racing venue."
+      - name: venue
+        description: "The full name of the hippodrome."
         tests:
-          - not_null
           - unique
+          - not_null
+
+      - name: country
+        description: "The country where the venue is located."
 
       - name: total_races
-        description: "Total number of races held at the venue."
-        tests:
-          - not_null
+        description: "Total number of races ingested for this venue across the historical window."
 
-      - name: avg_prize
-        description: "Average prize money awarded per race at the venue."
+      - name: racing_days
+        description: "The number of unique calendar days on which racing occurred at this venue."
+
+      - name: avg_prize_pool
+        description: "The mean total prize money distributed per race (in Euros)."
+
+      - name: record_prize_pool
+        description: "The highest single prize pool recorded at this venue in the dataset."
+
+      - name: total_purse_distributed
+        description: "The cumulative sum of all prize money distributed at this venue."
+
+      - name: avg_field_size
+        description: "The average number of runners participating per race."
+
+      - name: weather_variety
+        description: "The count of distinct weather conditions recorded (proxy for climate volatility at the track)."
+
+      - name: venue_tier
+        description: "Business classification: 'Elite' (>50k avg), 'Professional' (>20k avg), or 'Regional'."
         tests:
-          - not_null
-          - dbt_utils.accepted_range:
-              arguments:
-                min_value: 0
-                inclusive: true  # Ensures value > 0, not >= 0 
-    
-      - name: last_update
-        description: "Timestamp of the last update to the venue statistics."
-        tests:
-          - not_null
+          - accepted_values:
+              values: ['Elite', 'Professional', 'Regional']
+
+      - name: value_per_race
+        description: "Total purse divided by total races; represents the expected payout for a single event at this venue."

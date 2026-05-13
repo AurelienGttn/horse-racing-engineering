@@ -3,7 +3,7 @@ import pandas as pd
 import os
 from datetime import datetime, timedelta
 
-def fetch_pmu_range(days_back=7):
+def fetch_all_pmu_fields(days_back=10):
     base_dir = os.path.dirname(os.path.abspath(__file__))
     output_path = os.path.abspath(os.path.join(base_dir, '..', 'data', 'raw', 'races.csv'))
     os.makedirs(os.path.dirname(output_path), exist_ok=True)
@@ -11,37 +11,63 @@ def fetch_pmu_range(days_back=7):
     all_races = []
     headers = {'User-Agent': 'Mozilla/5.0'}
 
-    # Loop through the last X days
     for i in range(days_back):
-        date_to_fetch = (datetime.now() - timedelta(days=i)).strftime('%d%m%Y')
-        url = f"https://offline.turfinfo.api.pmu.fr/rest/client/7/programme/{date_to_fetch}"
+        date_obj = datetime.now() - timedelta(days=i)
+        date_str = date_obj.strftime('%d%m%Y')
+        url = f"https://offline.turfinfo.api.pmu.fr/rest/client/7/programme/{date_str}"
         
-        print(f"📡 Fetching: {date_to_fetch}")
         try:
             response = requests.get(url, headers=headers, timeout=10)
             if response.status_code == 200:
                 data = response.json()
                 for reunion in data.get('programme', {}).get('reunions', []):
-                    # Debugging information
-                    print(f"DEBUG: Reunion keys: {reunion.keys()}")
-                    print(f"DEBUG: Etablissement: {reunion.get('etablissement')}")
-                    # Fixed mapping: Try 'nom' or 'etablissement'
-                    venue = reunion.get('nom') or reunion.get('etablissement') or 'Unknown'
+                    # --- Nested Dictionary Extraction ---
+                    hippo = reunion.get('hippodrome', {})
+                    meteo = reunion.get('meteo', {})
+                    pays = reunion.get('pays', {})
+                    
+                    # Reunion Level Metadata
+                    venue = hippo.get('libelleLong') or hippo.get('libelleCourt') or 'Unknown'
+                    weather = meteo.get('libelleMeteo') or 'Unknown'
+                    country = pays.get('libelle') or 'Unknown'
+                    num_reunion = reunion.get('numOfficiel')
+                    nature = reunion.get('nature', 'Unknown')
+                    
                     for race in reunion.get('courses', []):
+                        # Course Level Metadata
                         all_races.append({
-                            "race_id": f"PMU_{race.get('ordre')}_{reunion.get('numOfficiel')}_{date_to_fetch}",
-                            "race_date": (datetime.now() - timedelta(days=i)).strftime('%Y-%m-%d'),
+                            # IDs
+                            "race_id": f"PMU_{date_str}_{num_reunion}_{race.get('ordre')}",
+                            "race_date": date_obj.strftime('%Y-%m-%d'),
+                            "num_reunion": num_reunion,
+                            "race_number": race.get('ordre'),
+                            
+                            # Categorical Features
                             "venue": venue,
-                            "track_condition": race.get('incident', 'Standard'), # PMU uses incidents for conditions
+                            "country": country,
+                            "weather": weather,
+                            "reunion_nature": nature,
+                            "discipline": race.get('discipline', 'Unknown'),
+                            "specialty": race.get('specialite', 'Unknown'),
+                            "condition_age": race.get('conditionAge', 'Unknown'),
+                            "statut": race.get('statut', 'Unknown'),
+                            
+                            # Numerical Features
                             "prize_money": race.get('montantPrix', 0),
-                            "loaded_at": datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+                            "runners_count": race.get('nombrePartants', 0),
+                            "distance": race.get('distance', 0),
+                            "distance_unit": race.get('distanceUnite', 'm'),
+                            
+                            # Flags
+                            "is_quinte": 1 if race.get('cached') and 'QUINTE' in str(race).upper() else 0
                         })
+                print(f"✅ Ingested {date_str}")
         except Exception as e:
-            print(f"❌ Error on {date_to_fetch}: {e}")
+            print(f"❌ Error on {date_str}: {e}")
 
     df = pd.DataFrame(all_races)
     df.to_csv(output_path, index=False)
-    print(f"✅ Backfill complete. {len(df)} total rows saved.")
+    print(f"🚀 Total Rows: {len(df)} | Columns: {len(df.columns)}")
 
 if __name__ == "__main__":
-    fetch_pmu_range(days_back=5) # Change this number to go further back
+    fetch_all_pmu_fields(10)
