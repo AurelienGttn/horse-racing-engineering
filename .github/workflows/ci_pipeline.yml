@@ -72,10 +72,10 @@ jobs:
           db_path = '$DB_FILE'
           conn = duckdb.connect(db_path)
           
-          print('\n--- Mart Venue Stats ---')
+          print('\n--- Mart Venue Performance ---')
           try:
-              # Use the full path main.mart_venue_stats
-              df = conn.execute('SELECT * FROM main.mart_venue_stats LIMIT 10').df()
+              # Use the full path main.mart_venue_performance
+              df = conn.execute('SELECT * FROM main.mart_venue_performance LIMIT 10').df()
               print(df.to_markdown()) # to_markdown looks better in logs if you have tabulate installed, otherwise use print(df)
           except Exception as e:
               print(f'❌ Query failed: {e}')
