@@ -20,8 +20,9 @@ models:
         tests:
           - not_null
           - dbt_utils.accepted_range:
-              min_value: 0
-              inclusive: true  # Ensures value > 0, not >= 0   
+              arguments:
+                min_value: 0
+                inclusive: true  # Ensures value > 0, not >= 0 
     
       - name: last_update
         description: "Timestamp of the last update to the venue statistics."

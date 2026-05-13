@@ -32,8 +32,9 @@ models:
         description: "Prize money for the race in Euros. Cast to float for easier analysis."
         tests:
           - dbt_utils.accepted_range:
-              min_value: 0
-              inclusive: true  # Ensures value > 0, not >= 0   
+              arguments:
+                min_value: 0
+                inclusive: true  # Ensures value > 0, not >= 0 
 
       - name: inserted_at
         data_type: timestamp
