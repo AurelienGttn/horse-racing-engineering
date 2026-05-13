@@ -52,9 +52,28 @@ jobs:
 
       - name: Show me the Gold!
         run: |
-          # Use Python to run a query against the DuckDB file and print to console
-          python -c "import duckdb; conn = duckdb.connect('horse_racing_dbt/dev.duckdb'); print(conn.execute('SELECT * FROM mart_venue_stats LIMIT 10').df())"
-
+          python -c "
+          import duckdb
+          import os
+          
+          db_path = 'horse_racing_dbt/dev.duckdb'
+          if not os.path.exists(db_path):
+              print(f'❌ Database file not found at {db_path}')
+              exit(1)
+              
+          conn = duckdb.connect(db_path)
+          
+          print('--- Existing Tables ---')
+          print(conn.execute('SHOW TABLES').df())
+          
+          print('\n--- Mart Venue Stats ---')
+          # We use the full path main.mart_venue_stats to be safe
+          try:
+              print(conn.execute('SELECT * FROM main.mart_venue_stats LIMIT 10').df())
+          except Exception as e:
+              print(f'❌ Query failed: {e}')
+          "
+          
       - name: Deploy Docs to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         with:
