@@ -28,9 +28,24 @@ jobs:
           # Run the script using the full path from the repo root
           python scripts/fetch_pmu_data.py
 
+      - name: Inspect Data
+        run: |
+          echo "--- RAW CSV PREVIEW ---"
+          head -n 5 data/raw/races.csv
+          echo "--- TOTAL ROW COUNT ---"
+          wc -l data/raw/races.csv
+
       - name: Run dbt
         run: |
           cd horse_racing_dbt
           dbt deps
           dbt run
           dbt test
+
+      - name: Upload processed data
+        uses: actions/upload-artifact@v4
+        with:
+          name: horse_racing_results
+          path: |
+            data/raw/races.csv
+            horse_racing_dbt/dev.duckdb
