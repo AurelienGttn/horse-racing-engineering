@@ -21,3 +21,27 @@ source venv/bin/activate
 
 # Install dependencies
 pip install -r requirements.txt
+```
+
+### 3. Data Ingestion
+Generate current race data from the PMU API:
+
+```bash
+python scripts/generate_mock_data.py
+```
+
+### 4. Transformation & Testing
+```bash
+cd horse_racing_dbt
+
+# Build models and run data quality tests
+dbt run
+dbt test
+```
+
+## 🛡 Quality & Automation
+* **Data Testing:** Includes Generic (Unique, Not Null) and Singular (Business Logic) tests.
+
+* **CI/CD:** GitHub Actions automatically runs the ingestion, build, and test suite on every Push/PR.
+
+* **Documentation:** View the lineage and data dictionary by running dbt docs serve.
