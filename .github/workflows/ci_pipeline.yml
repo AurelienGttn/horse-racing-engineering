@@ -50,6 +50,11 @@ jobs:
           cp target/*.json ../public_docs/
           cp target/index.html ../public_docs/
 
+      - name: Show me the Gold!
+        run: |
+          # Use DuckDB to print the final table to the GitHub console
+          duckdb horse_racing_dbt/dev.duckdb "SELECT * FROM mart_venue_stats LIMIT 10;"
+
       - name: Deploy Docs to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         with:
@@ -57,10 +62,8 @@ jobs:
           publish_dir: ./public_docs
           force_orphan: true
 
-      - name: Upload processed data
+      - name: Download Database
         uses: actions/upload-artifact@v7
         with:
-          name: horse_racing_results
-          path: |
-            data/raw/races.csv
-            horse_racing_dbt/dev.duckdb
+          name: horse-racing-db
+          path: horse-racing-engineering/horse_racing_dbt/dev.duckdb
