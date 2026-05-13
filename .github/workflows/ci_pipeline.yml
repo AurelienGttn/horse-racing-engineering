@@ -52,36 +52,23 @@ jobs:
 
       - name: Show me the Gold!
         run: |
-          # 1. Find the file anywhere in the workspace
-          DB_FILE=$(find ${{ github.workspace }} -name "*.duckdb" | head -n 1)
-          
-          if [ -z "$DB_FILE" ]; then
-            echo "❌ STILL NO DUCKDB FILE FOUND!"
-            echo "Listing all files in the current directory to see what happened:"
-            ls -R
-            exit 1
-          fi
-
-          echo "✅ Found database at: $DB_FILE"
-          
-          # 2. Query it using Python
           python -c "
           import duckdb
           import os
           
-          db_path = '$DB_FILE'
-          conn = duckdb.connect(db_path)
+          # Using the exact path we discovered
+          workspace = os.getenv('GITHUB_WORKSPACE')
+          db_path = os.path.join(workspace, 'horse_racing_dbt/exploration-dev.duckdb')
           
-          print('\n--- Mart Venue Performance ---')
-          try:
-              # Use the full path main.mart_venue_performance
-              df = conn.execute('SELECT * FROM main.mart_venue_performance LIMIT 10').df()
-              print(df.to_markdown()) # to_markdown looks better in logs if you have tabulate installed, otherwise use print(df)
-          except Exception as e:
-              print(f'❌ Query failed: {e}')
-              # Let's see what tables DO exist
-              print('\n--- Available Tables ---')
-              print(conn.execute('SHOW TABLES').df())
+          if not os.path.exists(db_path):
+              print(f'❌ Path error: {db_path}')
+              exit(1)
+              
+          conn = duckdb.connect(db_path)
+          print('\n--- Mart Venue Performance (Real API Data) ---')
+          # Standard print to avoid tabulate dependency
+          df = conn.execute('SELECT * FROM main.mart_venue_performance LIMIT 10').df()
+          print(df.to_string())
           "
           
       - name: Deploy Docs to GitHub Pages
