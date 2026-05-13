@@ -52,8 +52,8 @@ jobs:
 
       - name: Show me the Gold!
         run: |
-          # Use DuckDB to print the final table to the GitHub console
-          duckdb horse_racing_dbt/dev.duckdb "SELECT * FROM mart_venue_stats LIMIT 10;"
+          # Use Python to run a query against the DuckDB file and print to console
+          python -c "import duckdb; conn = duckdb.connect('horse_racing_dbt/dev.duckdb'); print(conn.execute('SELECT * FROM mart_venue_stats LIMIT 10').df())"
 
       - name: Deploy Docs to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
