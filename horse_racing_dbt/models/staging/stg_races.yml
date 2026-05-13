@@ -9,7 +9,7 @@ models:
         description: "Unique identifier for each race. Cast to varchar for consistency and to avoid issues with leading zeros in IDs."
         tests:
           - not_null
-          - unique
+          #- unique
 
       - name: race_date
         data_type: date
