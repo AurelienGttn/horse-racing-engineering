@@ -59,7 +59,10 @@ def fetch_all_pmu_fields(days_back=10):
                             "distance_unit": race.get('distanceUnite', 'm'),
                             
                             # Flags
-                            "is_quinte": 1 if race.get('cached') and 'QUINTE' in str(race).upper() else 0
+                            "is_quinte": 1 if race.get('cached') and 'QUINTE' in str(race).upper() else 0,
+
+                            # Technical Metadata
+                            "inserted_at": datetime.now().strftime('%Y-%m-%d %H:%M:%S')
                         })
                 print(f"✅ Ingested {date_str}")
         except Exception as e:

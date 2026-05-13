@@ -9,7 +9,7 @@ venue_metrics AS (
         venue,
         country,
         -- Volume metrics
-        COUNT(race_id) as total_races,
+        COUNT(unique_race_key) as total_races,
         COUNT(DISTINCT race_date) as racing_days,
         
         -- Financial metrics
