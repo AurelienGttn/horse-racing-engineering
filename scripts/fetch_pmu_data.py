@@ -32,7 +32,9 @@ def fetch_pmu_range(days_back=7):
                             "race_id": f"PMU_{race.get('ordre')}_{reunion.get('numOfficiel')}_{date_to_fetch}",
                             "race_date": (datetime.now() - timedelta(days=i)).strftime('%Y-%m-%d'),
                             "venue": venue,
-                            "prize_money": race.get('montantPrix', 0)
+                            "track_condition": race.get('incident', 'Standard'), # PMU uses incidents for conditions
+                            "prize_money": race.get('montantPrix', 0),
+                            "loaded_at": datetime.now().strftime('%Y-%m-%d %H:%M:%S')
                         })
         except Exception as e:
             print(f"❌ Error on {date_to_fetch}: {e}")
