@@ -22,6 +22,9 @@ def fetch_pmu_range(days_back=7):
             if response.status_code == 200:
                 data = response.json()
                 for reunion in data.get('programme', {}).get('reunions', []):
+                    # Debugging information
+                    print(f"DEBUG: Reunion keys: {reunion.keys()}")
+                    print(f"DEBUG: Etablissement: {reunion.get('etablissement')}")
                     # Fixed mapping: Try 'nom' or 'etablissement'
                     venue = reunion.get('nom') or reunion.get('etablissement') or 'Unknown'
                     for race in reunion.get('courses', []):
