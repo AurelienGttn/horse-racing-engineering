@@ -43,7 +43,7 @@ jobs:
           dbt test
 
       - name: Upload processed data
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: horse_racing_results
           path: |
