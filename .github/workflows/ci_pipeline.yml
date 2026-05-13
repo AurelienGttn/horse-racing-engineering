@@ -10,7 +10,7 @@ permissions:
   contents: write # Needed to push to gh-pages branch for documentation
 
 jobs:
-  build_and_test:
+  build_and_publish:
     runs-on: ubuntu-latest
 
     steps:
@@ -50,7 +50,7 @@ jobs:
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: /horse_racing_dbt/target
+          publish_dir: ./horse_racing_dbt/target
           force_orphan: true
 
       - name: Upload processed data
