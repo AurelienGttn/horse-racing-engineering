@@ -29,8 +29,8 @@ jobs:
           python scripts/generate_mock_data.py
 
       - name: Run dbt
-        env:
-          DBT_PROFILES_DIR: ./horse_racing_dbt
+        #env:
+         # DBT_PROFILES_DIR: ./horse_racing_dbt
         run: |
           cd horse_racing_dbt
           dbt deps
