@@ -50,7 +50,7 @@ jobs:
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./horse-racing-engineering/horse_racing_dbt/target
+          publish_dir: /horse_racing_dbt/target
           force_orphan: true
 
       - name: Upload processed data
