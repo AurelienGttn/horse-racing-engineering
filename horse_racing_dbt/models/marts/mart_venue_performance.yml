@@ -1,7 +1,7 @@
 version: 2
 
 models:
-  - name: mart_venue_stats
+  - name: mart_venue_performance
     description: "High-level summary of racing venues, used for business performance tracking."
     columns:
       - name: venue_name
