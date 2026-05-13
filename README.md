@@ -45,3 +45,7 @@ dbt test
 * **CI/CD:** GitHub Actions automatically runs the ingestion, build, and test suite on every Push/PR.
 
 * **Documentation:** View the lineage and data dictionary by running dbt docs serve.
+
+## 📖 Documentation
+View the live Data Portal and Lineage Graph here:
+[https://your-username.github.io/horse-racing-engineering/](https://aureliengttn.github.io/horse-racing-engineering/)
