@@ -10,6 +10,10 @@ jobs:
   build_and_test:
     runs-on: ubuntu-latest
 
+    defaults:
+      run:
+        working-directory: ./  # Set the working directory to the root of the repository
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v6
@@ -26,7 +30,7 @@ jobs:
       - name: Generate Mock Data
         run: |
           # Run the script using the full path from the repo root
-          python ../scripts/generate_mock_data.py
+          python scripts/generate_mock_data.py
 
       - name: Run dbt
         env:
